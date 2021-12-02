@@ -58,7 +58,6 @@ btns.forEach((btn) => {
         buttonToggle("hold")
         //swap current player to other player now
         swapPlayer(player)
-
     } 
   });
 });
@@ -72,6 +71,8 @@ const twoPlayerScoring = () => {
     if (rollScore === 1) {
       // lose turn, sigh and hand over to the other player
       playAudio(soundEffectsArray[1]);
+      shakePlayer(player, 1500);
+      buttonToggle("hold"); 
       setTimeout(() => {
         setCurrentScore(player, 0);
         swapPlayer(player);
@@ -132,24 +133,23 @@ const winCondition = (player) =>{
 }
 
 const swapPlayer = (player) => {
-  let Sibling = player.nextElementSibling;
+  let sibling = player.nextElementSibling;
   if (player.nextElementSibling === null) {
-    Sibling = player.previousElementSibling;
+    sibling = player.previousElementSibling;
   }
   currentPlayer.classList.remove("current-player") 
-  Sibling.querySelector(".player").classList.add("current-player")
+  sibling.querySelector(".player").classList.add("current-player")
   currentPlayer = document.querySelector(".current-player");
   currentScore = 0;
 }
 
 const rollDice = () => {
   let score = 0;
-  
   score = getRandomInt(1, 6);
   
   // remove the img element if it exists and replace with dice roll gif
   resetDiceImg();
-   displayDiceImg(`${defaultMediaPath}${dieImageArray[0]}`);
+  displayDiceImg(`${defaultMediaPath}${dieImageArray[0]}`);
 
   const audio = new Audio(`${defaultMediaPath}${soundEffectsArray[0]}`);
   audio.play();
@@ -170,7 +170,7 @@ const initDiceImg = () => {
 const resetDiceImg = () => {
   //removes any existing images
   if (diceImg.hasChildNodes()) {
-    diceImg.querySelectorAll("*").forEach((n) => n.remove());
+    diceImg.querySelectorAll("*").forEach((img) => img.remove());
   }
 };
 
@@ -179,6 +179,14 @@ const displayDiceImg = (src) => {
   img.src = src;
   diceImg.appendChild(img);
 };
+
+// shake the player name
+const shakePlayer = (player, shakeLength) => {
+  player.classList.add("shake");
+  setTimeout(() => {
+    player.classList.remove("shake");
+  }, shakeLength);
+}
 
 const buttonToggle = (action) => {
   if (action === "new"){
@@ -209,6 +217,18 @@ const buttonToggle = (action) => {
   }
 }
 
+
+const clonePlayer = () =>{
+  // clone player2 to match the html of player 1 to ensure both are the same
+  const srcNode = document.querySelector(".player1")
+  let targetNode = srcNode.cloneNode(true)
+  targetNode.classList.remove("player1")
+  targetNode.classList.add("player2");
+  targetNode.querySelector(".player").classList.remove("current-player")
+  targetNode.querySelector(".player-name").innerHTML = "Player2";
+  twoPlayer.appendChild(targetNode)
+}
+
 // starts or resets the game variables to init
 const newGame = () => {
   //reset all the scores
@@ -227,8 +247,15 @@ const newGame = () => {
       players[i].classList.remove("current-player");
     }
   }
+  currentPlayer = document.querySelector(".current-player");
 };
 
-// initiate a new game
-newGame();
+// Start the new game
+document.addEventListener("DOMContentLoaded", () => {
+  // make player 2 clone from player 1
+  clonePlayer(); 
+  // initiate a new game
+  newGame();
+  },false
+);
 
