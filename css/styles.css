@@ -31,6 +31,7 @@ html {
   --ff-primary: "Roboto", sans-serif;
   --col-med-blue: mediumblue;
   --col-orange-red: orangered;
+  --col-med-orange: orange;
   --light-shadow: 22px 22px 15px -10px rgba(0,0,0,0.28);
   --dark-shadow: 22px 22px 15px -10px rgba(0,0,0,0.66);
   --transition-slow: 1s;
@@ -108,20 +109,60 @@ Two Player Dice Game
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  flex: 1;
+  /* flex: 1; */
   width: 100%;
   margin: 0 auto;
   height: 100%;
 }
 
-.current-player .player-name{
-  background-color: orangered;
+.current-score-div div{
+  width:30%;
+  margin: 0 auto;
+  height: auto;
+  background-color: red;
+  border: 2px solid white;
+  border-radius: 5px;
+  color:white; 
+  box-shadow: var(--light-shadow);
+}
+
+.current-score-div h3{
+   font-size: 1.5rem;
+}
+
+.total-score-div div{
+  width:30%;
+  margin: 0 auto;
+  height: auto;
+  background-color: var(--);
+  border: 2px solid white;
+  border-radius: 5px;
+  color: red ;
+  box-shadow: var(--light-shadow);
+}
+
+.player-name{
+  background-color: var(--col-orange-red);
   padding: 10px;
-  font-size: 3rem;
+  font-size: 2rem;
   color: white;
   border: 1px solid var(--col-orange-red);
   border-radius: 5px;
+  border: 2px solid black;
+ 
+}
+
+.current-player .player-name{
+  font-size: 3rem;
+  color: white;
+  border-radius: 5px;
   box-shadow: var(--dark-shadow);
+  transition: 1s;
+}
+
+.current-player .player-name:hover{
+  cursor: pointer;
+  background-color:darkred;
 }
 
 .player1{
@@ -131,10 +172,6 @@ Two Player Dice Game
 .player2{
   background-color: orange;
 }
-
-.new-game{
-  position: absolute;
-} 
 
 .roll-hold-buttons{
   position: absolute;
@@ -169,7 +206,6 @@ Two Player Dice Game
   opacity: 0.7;
   
 }
-
 
 .dice{
   position: absolute;

@@ -29,7 +29,8 @@ const getRandomInt = (min, max) => {
 
 // play audio function
 const playAudio = (soundPath) => {
-  const audio = new Audio(soundPath);
+  let sound = `${defaultMediaPath}${soundPath}`;
+  const audio = new Audio(sound);
   audio.play();
 };
 
@@ -38,54 +39,54 @@ btns.forEach((btn) => {
   btn.addEventListener("click", (e) => {
     let btnClass = e.currentTarget;
     
-    if (btnClass.classList.contains("new-game-btn")){
-      // New game. disable/enable buttons
-      btnClass.classList.add("disabled")
-      const holdRollBtns = document.querySelector(".roll-hold-btns");
-      
-      const gameBtns = holdRollBtns.getElementsByTagName("button");
-      for(let i = 0; i <gameBtns.length; i++){
-        gameBtns[i].classList.remove("disabled");
-      }
+    if (btnClass.classList.contains("new-game")){
+      // New game. disable/enable buttons reset to beginning
+      newGame();
+      // new game button state
+      buttonToggle("new");
+      buttonToggle("hold");
 
     }else if (btnClass.classList.contains("roll-btn")) {
-        let rollScore = rollDice();
-
-        setTimeout(function () {
-          // get the parent node of the current player so that we can manipulate its values
-          const player = currentPlayer.parentNode;
-          setCurrentScore(player, rollScore);
-
-        }, 3000);  
+        twoPlayerScoring();
+        buttonToggle("roll")
 
     } else if (btnClass.classList.contains("hold-btn")) {
-        //store current score to total and swap to other player
-          const player = currentPlayer.parentNode;
-          setTotalScore(player)
-          setCurrentScore(player, 0);
-
+        //store current score to total score, reset current 
+        const player = currentPlayer.parentNode;
+        setTotalScore(player)
+        setCurrentScore(player, 0);
+        buttonToggle("hold")
         //swap current player to other player now
-        let Sibling = player.nextElementSibling;
-        if (player.nextElementSibling === null) {
-          Sibling = player.previousElementSibling;
-        }
+        swapPlayer(player)
 
-        currentPlayer.classList.remove("current-player") 
-        Sibling.querySelector(".player").classList.add("current-player")
-        currentPlayer = document.querySelector(".current-player");
-        currentScore = 0;
-
-
-    } else if (btnClass.classList.contains("reset-btn")) {
-        //reset the game board
-        toggleRollNewGameBtn(btnClass, false);
-
-        // reset game variables
-        startGame(currentGameType);
-        
-    }
+    } 
   });
 });
+
+const twoPlayerScoring = () => {
+  let rollScore = rollDice();
+
+  setTimeout(() => {
+    // get the parent node of the current player so that we can manipulate its values
+    const player = currentPlayer.parentNode;
+    if (rollScore === 1) {
+      // lose turn, sigh and hand over to the other player
+      playAudio(soundEffectsArray[1]);
+      setTimeout(() => {
+        setCurrentScore(player, 0);
+        swapPlayer(player);
+      }, 3000); 
+    
+    }else {
+      //we continue
+      setCurrentScore(player, rollScore);
+      if (isCombinedScoreWin(player)) {
+        //win!
+        winCondition(player);
+      }  
+    }
+  }, 3000);  
+}
 
 const setCurrentScore = (player, score) =>{
   const currentScoreDisp = player
@@ -111,36 +112,35 @@ const setTotalScore = (player) => {
 
 }
 
+const isCombinedScoreWin = (player) => {
+  const totalScore = player
+    .querySelector(".total-score-div")
+    .querySelector(".total-score");
+    let score = parseInt(totalScore.innerHTML);
+    if ((score + currentScore) >= maxScore){
+      return true
+    } 
+    return false
+}
 
-// const onePlayerRules = (btnClass) => {
-//   //roll dice button clicked
+const winCondition = (player) =>{
+  buttonToggle("win");
+  setTotalScore(player);
+  setCurrentScore(player, 0);
+  playAudio(soundEffectsArray[2])
 
-//   let roll = rollDice();
-//   currentScore += roll;
-//   setTimeout(function () {
-//     let currentStatus = "";
-//     if (roll === 1) {
-//       // score of 1 = insta-lose
+}
 
-//       currentStatus = "Lost! rolled a 1";
-//       playAudio(`${defaultMediaPath}${soundEffectsArray[1]}`);
-//       toggleRollNewGameBtn(btnClass);
-//     } else if (currentScore >= 21) {
-//       // win!
-
-//       scoreDisplay.textContent = `Score: ${currentScore}`;
-//       currentStatus = "wins!";
-//       playAudio(`${defaultMediaPath}${soundEffectsArray[2]}`);
-//       toggleRollNewGameBtn(btnClass);
-//     } else {
-//       // we continue...
-
-//       currentStatus = "Playing...";
-//       scoreDisplay.textContent = `Score: ${currentScore}`;
-//     }
-//     gameStatus.textContent = currentStatus;
-//   }, 3000);
-// };
+const swapPlayer = (player) => {
+  let Sibling = player.nextElementSibling;
+  if (player.nextElementSibling === null) {
+    Sibling = player.previousElementSibling;
+  }
+  currentPlayer.classList.remove("current-player") 
+  Sibling.querySelector(".player").classList.add("current-player")
+  currentPlayer = document.querySelector(".current-player");
+  currentScore = 0;
+}
 
 const rollDice = () => {
   let score = 0;
@@ -162,29 +162,10 @@ const rollDice = () => {
   return score;
 };
 
-const toggleRollNewGameBtn = (btn, isResetBtn = true) => {
-  // during the game the button will be 'roll'
-  // at the end of the game either loss or win then the
-  // button will become a reset button
-  if (isResetBtn) {
-    // becomes a reset button
-    btn.innerHTML = "New Game";
-    btn.classList.remove("roll-btn");
-    btn.classList.add("reset-btn");
-  } else {
-    // becomes a roll button
-    btn.innerHTML = "Roll";
-    btn.classList.remove("reset-btn");
-    btn.classList.add("roll-btn");
-  }
-};
-
-
 const initDiceImg = () => {
-  
   resetDiceImg();
   displayDiceImg(defaultDiceImg);
-}
+};
 
 const resetDiceImg = () => {
   //removes any existing images
@@ -197,15 +178,57 @@ const displayDiceImg = (src) => {
   let img = document.createElement("img");
   img.src = src;
   diceImg.appendChild(img);
-  
 };
 
+const buttonToggle = (action) => {
+  if (action === "new"){
+    const newGameBtn = document.querySelector(".new-game");
+    newGameBtn.classList.add("disabled");
+    const holdRollBtns = document.querySelector(".roll-hold-btns");
+    const gameBtns = holdRollBtns.getElementsByTagName("button");
+    for (let i = 0; i < gameBtns.length; i++) {
+      gameBtns[i].classList.remove("disabled");
+    }  
+  }else if (action === "win"){
+    // end game reset button states.
+    const newGameBtn = document.querySelector(".new-game")
+    newGameBtn.classList.remove("disabled");
+    const holdRollBtns = document.querySelector(".roll-hold-btns");
+    const gameBtns = holdRollBtns.getElementsByTagName("button");
+    for (let i = 0; i < gameBtns.length; i++) {
+      gameBtns[i].classList.add("disabled");
+    }
+  } else if (action ==="hold") {
+      // disable hold button after pressing
+      const holdBtn = document.querySelector(".hold-btn");
+      holdBtn.classList.add("disabled");
+  } else if (action === "roll"){
+    // reneable hold button after first roll
+    const holdBtn = document.querySelector(".hold-btn");
+    holdBtn.classList.remove("disabled");
+  }
+}
+
 // starts or resets the game variables to init
-const NewGame = () => {
-  currentScore = 0;
+const newGame = () => {
+  //reset all the scores
+  let scores = document.querySelectorAll(".total-score")
+  scores.forEach((score) => score.innerHTML = "0")
+  scores = document.querySelectorAll(".current-score")
+  scores.forEach((score) => score.innerHTML = "0")
+  currentScore = 0
   initDiceImg();
+  //reset game to player 1 start
+  players = document.querySelectorAll(".player")
+  for (i = 0 ; i < players.length; i++){
+    if (players[i].parentNode.classList.contains("player1")){
+      players[i].classList.add("current-player");
+    }else {
+      players[i].classList.remove("current-player");
+    }
+  }
 };
 
 // initiate a new game
-NewGame();
+newGame();
 
