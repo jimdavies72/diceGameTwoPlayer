@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Added to remove the favicon.ico exception in Live Server -->
+    <link rel="shortcut icon" href="#">
+    <link rel="stylesheet" href="./css/styles.css">
+    <title>Two PLayer Dice Game</title>
+  </head>
+  <body>
+    
+    <div class="wrapper">
+      <!-- 2 player board -->
+      <!-- all the mid-line game controls -->
+      <div class="game-controls">
+        <div class="new-game-btn">
+          <button class="btn new-game-btn">New Game</button>
+        </div>
+        <div class="dice dice-img">
+          <img src="./media/dice-roll.gif" alt="dice roll image">
+        </div>
+        <div class="roll-hold-btns">
+          <button class="btn disabled roll-btn">Roll</button>
+          <button class="btn disabled hold-btn">Hold</button>
+        </div>
+      </div>
+      <section class="section two-player-board">
+        <!-- end of game controls -->
+        <div class="container player1">  
+          <div class="player current-player">
+            <h3 class="player-name">Player 1</h3>
+          </div>
+          <div class="total-score-div">
+            <h2 class="total-score">0</h2>
+          </div>
+          <div class="current-score-div">
+            <h3>Current</h3>
+          <h3 class="current-score p1">0</h3>
+          </div>
+        </div>
+        
+        <div class="container player2">  
+          <div class="player">
+            <h3 class="player-name">Player 2</h3>
+          </div>
+          <div class="total-score-div">
+            <h2 class="total-score">0</h2>
+          </div>
+          <div class="current-score-div">
+            <h3>Current</h3>
+          <h3 class="current-score p2">0</h3>
+          </div>
+        </div>
+
+        
+      </section> 
+      <!-- end of two player section -->
+    </div>
+    <script src="./src/main.js"></script>
+  </body>
+</html>
