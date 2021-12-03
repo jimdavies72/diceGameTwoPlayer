@@ -135,7 +135,7 @@ Two Player Dice Game
   width:30%;
   margin: 0 auto;
   height: auto;
-  background-color: var(--);
+  background-color: var(--col-med-orange);
   border: 2px solid white;
   border-radius: 5px;
   color: red ;
@@ -253,3 +253,39 @@ Keyframes
 Media Queries
 -------------
 */
+
+@media screen and (max-width:620px) {
+
+  
+  .current-player .player-name{
+  font-size: 1.7rem;
+  color: white;
+  border-radius: 5px;
+  box-shadow: var(--dark-shadow);
+  transition: 1s;
+}
+  .player-name{
+    font-size: 80%;
+  }
+
+  .current-score-div h3{
+    font-size: 1rem;
+  }
+
+  .new-game{
+    min-width: 80px;
+    width: 100px;
+    font-size: 0.7rem;
+    border: 1px solid black;
+  }
+
+.dice-img img{
+  width: 100px;
+  height: 100px;
+  top:30%;
+  left:70%;
+  z-index: 30;
+}
+
+}
+

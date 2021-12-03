@@ -7,7 +7,7 @@
     <!-- Added to remove the favicon.ico exception in Live Server -->
     <link rel="shortcut icon" href="#">
     <link rel="stylesheet" href="./css/styles.css">
-    <title>Two PLayer Dice Game</title>
+    <title>Two Player Dice Game</title>
   </head>
   <body>
     
@@ -26,8 +26,10 @@
           <button class="btn disabled hold-btn">Hold</button>
         </div>
       </div>
+      <!-- end of game controls -->
+      <!-- 2 player game section -->
       <section class="section two-player-board">
-        <!-- end of game controls -->
+        <!-- player 1 -->
         <div class="container player1">  
           <div class="player current-player">
             <h3 class="player-name">Player 1</h3>
@@ -44,11 +46,11 @@
             </div>
           </div>
         </div>
+        <!-- end of player 1 -->
         
-
-        
+        <!-- player 2 created as a clone of player 1 -->
       </section> 
-      <!-- end of two player section -->
+      <!-- end of two player game section -->
     </div>
     <script src="./src/main.js"></script>
   </body>
