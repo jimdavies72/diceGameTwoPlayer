@@ -18,7 +18,6 @@ const twoPlayer = document.querySelector(".two-player-board");
 let currentScore = 0;
 const maxScore = 21;
 const defaultMediaPath = "./media/";
-const defaultDiceImg = `${defaultMediaPath}${dieImageArray[0]}`;
 
 // random number generator
 const getRandomInt = (min, max) => {
@@ -164,7 +163,7 @@ const rollDice = () => {
 
 const initDiceImg = () => {
   resetDiceImg();
-  displayDiceImg(defaultDiceImg);
+  displayDiceImg(`${defaultMediaPath}${dieImageArray[0]}`);
 };
 
 const resetDiceImg = () => {
